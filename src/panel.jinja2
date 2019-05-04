@@ -1,7 +1,78 @@
 {% extends 'base.jinja2' %}
 
 {% block content %}
-  <div>
-    ohayo, ich bin das Panel!
-  </div>
+    <style type="text/css">
+        .statistic {
+            margin-bottom: 12px;
+        }
+        .statistic .label {
+            font-size: 85%;
+        }
+        .statistic .value {
+            font-size: 110%;
+            color: var(--accent-color);
+        }
+        .statistic .value#pp-value {
+            font-size: 120%;
+        }
+
+        .footer {
+            margin-top: 21px;
+
+            display: flex;
+            justify-content: center;
+        }
+        .footer * {
+            font-size: 70%;
+        }
+    </style>
+
+    <div class="statistic">
+        <span class="label">
+            global Rank:
+        </span>
+        <span id="rank-value" class="value">
+            #17
+        </span>
+    </div>
+    <div class="statistic">
+        <span class="label">
+            PP:
+        </span>
+        <span id="pp-value" class="value">
+            4200
+        </span>
+    </div>
+
+    <div class="footer">
+        <a href="https://scoresaber.com/u/76561198083237291">more details on ScoreSaber.com</a>
+    </div>
+
+    <script type="text/javascript">
+        const BASE_URL = new URL('http://scoresaber-proxy.lucavazzano.eu/')
+
+        let url = new URL('getRank.php', BASE_URL)
+        url.searchParams.append('playerid', '76561198083237291')
+        url.searchParams.append('version', '2.1.1')
+        fetch(new Request(url))
+            .then(response => {
+                if (!response.ok) {
+                    rlog('HTTP error on req from ScoreSaber, status ' + response.status)
+                    throw 'HTTP error'
+                } else {
+                    return response.text()
+                }
+            })
+            .then(text => text.replace(/[^0-9|\.]/, '') /* sanatize */)
+            .then(v => {
+                rlog(v)
+                return v
+            })
+            .then(text => text.split('|'))
+            .then(values => values.map(v => (+v).toLocaleString()))
+            .then(([rank, pp]) => {
+                document.getElementById('rank-value').innerText = `#${rank}`
+                document.getElementById('pp-value').innerText = `${pp}`
+            })
+    </script>
 {% endblock %}
