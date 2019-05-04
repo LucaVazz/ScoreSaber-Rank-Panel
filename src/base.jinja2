@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+
+		<style type="text/css">
+			{% include 'reset.css' %}
+			{% include 'base.css' %}
+		</style>
+	</head>
+	<body id="root" style="">
+		<noscript>
+		You need to enable JavaScript to run this app.
+		</noscript>
+
+		{% block content %}{% endblock %}
+
+		<script type="text/javascript">
+			{% include 'base.js' %}
+		</script>
+	</body>
+</html>
