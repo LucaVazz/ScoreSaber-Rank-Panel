@@ -1,12 +1,14 @@
+import logging
 import os
 import glob
-import logging
+import shutil
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
-DIST_PATH = os.path.join(os.path.dirname(__file__), 'dist')
-SRC_PATH = os.path.join(os.path.dirname(__file__), 'src')
+ROOT_PATH = os.path.dirname(__file__)
+DIST_PATH = os.path.join(ROOT_PATH, 'dist')
+SRC_PATH = os.path.join(ROOT_PATH, 'src')
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
@@ -28,5 +30,9 @@ for site_name in sites:
 	site_dist_path = os.path.join(DIST_PATH, f'{site_name}.html')
 	with open(site_dist_path, 'w') as f:
 		f.write(site_text)
+
+logging.info('Creating zip...')
+shutil.make_archive(os.path.join(ROOT_PATH, 'dist'), 'zip', DIST_PATH)
+shutil.move(os.path.join(ROOT_PATH, 'dist.zip'), os.path.join(DIST_PATH, 'dist.zip'))
 
 logging.info('Done!')
