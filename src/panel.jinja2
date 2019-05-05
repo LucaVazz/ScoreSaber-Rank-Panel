@@ -21,18 +21,39 @@
         .statistic {
             margin-top: 10px;
         }
+        .statistic .label, .statistic .value {
+            display: inline-block;
+            vertical-align: top;
+        }
         .statistic .label {
-            font-size: 85%;
+            font-size: 75%;
             padding-left: 7px;
         }
-        .statistic .value {
+        .statistic .value *:not(:nth-child(1)) {
+            margin-top: 3px;
+        }
+        .statistic .value .highlight {
             font-size: 110%;
             color: var(--accent-color);
         }
-        .statistic .value#pp-value {
+        .statistic .value .highlight span {
+            color: var(--accent-color);
+        }
+        .statistic .value .highlight#pp-value {
             font-size: 120%;
         }
+        .statistic .value .note {
+            font-size: 65%;
+        }
+        .statistic .value .note .icon {
+            margin-right: -2px;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
+
 
     <div class="header">
         <span>
@@ -44,40 +65,125 @@
         <span class="label">
             global Rank:
         </span>
-        <span id="rank-value" class="value">
-            #17
+        <span class="value">
+            <div>
+                <span class="highlight">
+                    #<span id="global-rank-value">900.000</span>
+                </span>
+                <span class="note">
+                    (top <span id="global-rank-percentile">99.99</span>%)
+                </span>
+            </div>
+            <div class="note">
+                today: 
+                <i class="icon ion-md-trending-up" id="global-rank-change-today-icon"></i>
+                <span id="global-rank-change-today">100.000</span>
+                this week:
+                <i class="icon ion-md-trending-up" id="global-rank-change-week-icon"></i>
+                <span id="global-rank-change-week">100.000</span>
+            </div>
+        </span>
+    </div>
+    <div class="statistic">
+        <span class="label">
+            local Rank:
+        </span>
+        <span class="value">
+            <span class="highlight">
+                #<span id="country-rank-value">900.000</span>
+            </span>
+            <span class="note">
+                in <img src="http://scoresaber.com/imports/flags/de.png" id="flag-img">
+            </span>
         </span>
     </div>
     <div class="statistic">
         <span class="label">
             PP:
         </span>
-        <span id="pp-value" class="value">
-            4200
+        <span class="value">
+            <span class="highlight" id="pp-value">
+                9000.000.000.000,99
+            </span>
         </span>
     </div>
 
-    <script type="text/javascript">
-        const BASE_URL = new URL('http://scoresaber-proxy.lucavazzano.eu/')
 
-        let url = new URL('getRank.php', BASE_URL)
-        url.searchParams.append('playerid', '76561198083237291')
-        url.searchParams.append('version', '2.1.1')
-        fetch(new Request(url))
-            .then(response => {
-                if (!response.ok) {
-                    rlog('HTTP error on req from ScoreSaber, status ' + response.status)
-                    throw 'HTTP error'
-                } else {
-                    return response.text()
-                }
-            })
-            .then(text => text.replace(/[^0-9|\.]/, '') /* sanatize */)
-            .then(text => text.split('|'))
-            .then(values => values.map(v => (+v).toLocaleString()))
-            .then(([rank, pp]) => {
-                document.getElementById('rank-value').innerText = `#${rank}`
-                document.getElementById('pp-value').innerText = `${pp}`
-            })
+    <script type="text/javascript">
+        const DATA_URL = new URL('http://scoresaber-proxy.lucavazzano.eu/76561198047788587')
+        const PARSER = new DOMParser()
+
+        function fetchData() {
+            fetch(new Request(DATA_URL))
+                .then(response => {
+                    if (!response.ok) {
+                        rlog('HTTP error on req from ScoreSaber, status ' + response.status)
+                        throw 'HTTP error'
+                    } else {
+                        return response.text()
+                    }
+                })
+                .then(text => PARSER.parseFromString(text, 'text/html'))
+                .then(doc => {
+                    // Parse:
+                    let [rankLi, ppLi, playCountLi, ] = doc.querySelectorAll(
+                        '.content .columns .column:nth-child(2) > ul > li'
+                    )
+
+                    let [ , globalRank, globalCount, country, countryRank] = rankLi.innerHTML
+                        .match(/#([0-9,]+)\s*\/\s*#([0-9,]+).*country=([a-z]+).*#([0-9,]+)/s)
+                    ;
+
+                    let globalPercentile = toNumber(globalRank) / toNumber(globalCount) * 100
+
+                    let pp = ppLi.innerText.match(/[0-9,.]+/)[0]
+                    let playCount = playCountLi.innerText.match(/[0-9]+/)[0]
+
+                    let rankHistory = doc.querySelector('script:not([src])').innerText
+                        .match(/datasets:.*\[{.*data:.*\[([0-9,]+)/s)[1]
+                        .split(',')
+                        .map(v => (+v))
+                        .reverse()
+                    ;
+                    let globalRankChangeToday = rankHistory[1] - rankHistory[0]
+                    let isGlobalRankChangeTodayUp = (globalRankChangeToday >= 0)
+                    let globalRankChangeWeek = rankHistory[8] - rankHistory[0]
+                    let isGlobalRankChangeWeekUp = (globalRankChangeWeek >= 0)
+
+                    // Format:
+                    globalRank = toLocaleNumberString(globalRank)
+                    globalRankChangeToday = Math.abs(globalRankChangeToday).toLocaleString()
+                    globalRankChangeWeek = Math.abs(globalRankChangeWeek).toLocaleString()
+                    countryRank = toLocaleNumberString(countryRank)
+                    globalPercentile = globalPercentile.toFixed(2)
+                    pp = toLocaleNumberString(pp)
+
+                    // Insert in site:
+                    document.getElementById('global-rank-value').innerText = 
+                        globalRank
+                    document.getElementById('global-rank-percentile').innerText = 
+                        globalPercentile
+                    document.getElementById('global-rank-change-today').innerText = 
+                        globalRankChangeToday
+                    document.getElementById('global-rank-change-week').innerText = 
+                        globalRankChangeWeek
+                    document.getElementById('country-rank-value').innerText = 
+                        countryRank
+                    document.getElementById('flag-img').src =
+                        `http://scoresaber.com/imports/flags/${country}.png`
+                    document.getElementById('pp-value').innerText = 
+                        pp
+
+                    document.getElementById('global-rank-change-today-icon').className =
+                        `icon ion-md-trending-${isGlobalRankChangeTodayUp ? 'up': 'down'}`
+                    document.getElementById('global-rank-change-week-icon').className =
+                        `icon ion-md-trending-${isGlobalRankChangeWeekUp ? 'up': 'down'}`
+                })
+            ;
+        }
+        const toNumber = (str) => (+str.replace(',', ''));
+        const toLocaleNumberString = (str) => toNumber(str).toLocaleString();
+
+        fetchData()
     </script>
 {% endblock %}
