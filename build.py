@@ -24,6 +24,10 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
+logging.info('Copying JS...')
+for f in glob.glob(os.path.join(SRC_PATH, '*.js')):
+	shutil.copy(f, f.replace('src', 'dist'))
+
 sites = ['config', 'panel']
 for site_name in sites:
 	site_text = env.get_template(f'{site_name}.jinja2').render()

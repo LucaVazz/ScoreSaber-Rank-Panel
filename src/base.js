@@ -8,4 +8,6 @@ twitch.onContext((context, changedKeys) => {
 	} else {
 		document.getElementById('root').classList.remove('dark')
 	}
+
+	rlog(context.game)
 })
