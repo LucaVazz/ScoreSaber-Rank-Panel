@@ -25,7 +25,7 @@ body {
 
 }
 * {
-	color: #232127;
+	color: #19171c;
 }
 a {
 	color: #6441A4;
@@ -33,10 +33,10 @@ a {
 
 /* DARK THEME */
 body.dark {
-	background-color: #201c2b;
+	background-color: #0f0e11;
 }
 body.dark * {
-	color: #e5e3e8;
+	color: #dad8de;
 }
 body.dark a {
 	color: #e2dbf0;
