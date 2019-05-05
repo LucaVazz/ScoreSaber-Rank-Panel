@@ -22,7 +22,7 @@
       "orientation": "Portrait",
       "frameSize": {
         "width": 640,
-        "height": 480
+        "height": 185
       }
     },
     {
@@ -65,7 +65,7 @@
     "installationCount": -42,
     "liveConfigUrl": "",
     "name": "ScroeSaber Rank Panel",
-    "panelHeight": 300,
+    "panelHeight": 185,
     "privacyPolicyUrl": "",
     "requestIdentityLink": false,
     "requiredBroadcasterAbilities": [],
@@ -84,7 +84,7 @@
     "views": {
       "panel": {
         "viewerUrl": "https://localhost:8080/panel.html",
-        "height": 300,
+        "height": 185,
         "canLinkExternalContent": false
       },
       "config": {
