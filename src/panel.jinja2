@@ -2,7 +2,7 @@
 
 {% block content %}
     <style type="text/css">
-        .header {
+        #header {
             height: 75px;
             background-image: url("http://beatsaber.com/images/BG.jpg");
             background-size: cover;
@@ -12,10 +12,18 @@
             justify-content: center;
             align-items: center;
         }
-        .header span {
+        #header span {
             font-size: 135%;
             color: #ffffff;
             opacity: 0.85;
+        }
+
+        #load-splash {
+            flex: 1 0 auto;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .statistic {
@@ -50,62 +58,68 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
     </style>
 
 
-    <div class="header">
+    <div id="header">
         <span>
             My BeatSaber Score
         </span>
     </div>
 
-    <div class="statistic">
-        <span class="label">
-            global Rank:
-        </span>
-        <span class="value">
-            <div>
+    <div id="load-splash">
+        Loading...
+    </div>
+
+    <div id="content">
+        <div class="statistic">
+            <span class="label">
+                global Rank:
+            </span>
+            <span class="value">
+                <div>
+                    <span class="highlight">
+                        #<span id="global-rank-value">900.000</span>
+                    </span>
+                    <span class="note">
+                        (top <span id="global-rank-percentile">99.99</span>%)
+                    </span>
+                </div>
+                <div class="note">
+                    today: 
+                    <i class="icon ion-md-trending-up" id="global-rank-change-today-icon"></i>
+                    <span id="global-rank-change-today">100.000</span>
+                    this week:
+                    <i class="icon ion-md-trending-up" id="global-rank-change-week-icon"></i>
+                    <span id="global-rank-change-week">100.000</span>
+                </div>
+            </span>
+        </div>
+        <div class="statistic">
+            <span class="label">
+                local Rank:
+            </span>
+            <span class="value">
                 <span class="highlight">
-                    #<span id="global-rank-value">900.000</span>
+                    #<span id="country-rank-value">900.000</span>
                 </span>
                 <span class="note">
-                    (top <span id="global-rank-percentile">99.99</span>%)
+                    in <img src="http://scoresaber.com/imports/flags/de.png" id="flag-img">
                 </span>
-            </div>
-            <div class="note">
-                today: 
-                <i class="icon ion-md-trending-up" id="global-rank-change-today-icon"></i>
-                <span id="global-rank-change-today">100.000</span>
-                this week:
-                <i class="icon ion-md-trending-up" id="global-rank-change-week-icon"></i>
-                <span id="global-rank-change-week">100.000</span>
-            </div>
-        </span>
-    </div>
-    <div class="statistic">
-        <span class="label">
-            local Rank:
-        </span>
-        <span class="value">
-            <span class="highlight">
-                #<span id="country-rank-value">900.000</span>
             </span>
-            <span class="note">
-                in <img src="http://scoresaber.com/imports/flags/de.png" id="flag-img">
+        </div>
+        <div class="statistic">
+            <span class="label">
+                PP:
             </span>
-        </span>
-    </div>
-    <div class="statistic">
-        <span class="label">
-            PP:
-        </span>
-        <span class="value">
-            <span class="highlight" id="pp-value">
-                9000.000.000.000,99
+            <span class="value">
+                <span class="highlight" id="pp-value">
+                    9000.000.000.000,99
+                </span>
             </span>
-        </span>
+        </div>
     </div>
 
 
@@ -114,7 +128,7 @@
         const PARSER = new DOMParser()
 
         function fetchData() {
-            fetch(new Request(DATA_URL))
+            return fetch(new Request(DATA_URL))
                 .then(response => {
                     if (!response.ok) {
                         rlog('HTTP error on req from ScoreSaber, status ' + response.status)
@@ -181,9 +195,19 @@
                 })
             ;
         }
+
         const toNumber = (str) => (+str.replace(',', ''));
         const toLocaleNumberString = (str) => toNumber(str).toLocaleString();
+    </script>
 
+    <script type="text/javascript">
+        const CONTENT_DIV = document.getElementById('content')
+
+        CONTENT_DIV.classList.add('hidden')
         fetchData()
+            .then(() => {
+                document.getElementById('load-splash').classList.add('hidden')
+                CONTENT_DIV.classList.remove('hidden')
+            })
     </script>
 {% endblock %}

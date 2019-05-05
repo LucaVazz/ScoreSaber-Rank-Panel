@@ -3,11 +3,14 @@
 	box-sizing: border-box;
 }
 
-body {
+html, body {
 	width: 100%;
 	height: 100%;
+}
 
-	padding: 10px;
+body {
+	display: flex;
+	flex-direction: column;
 }
 
 
