@@ -1,6 +1,13 @@
 const DATA_URL = new URL('https://scoresaber-proxy.lucavazzano.eu/76561198047788587')
 const PARSER = new DOMParser()
 
+/*
+ * taken from https://ionicons.com/
+ *             Copyright (c) 2015-present Ionic (http://ionic.io/)
+ */
+const ICON_UP = '<path d="M345.6 128l51.3 51.3-109.3 109.4-89.6-89.6L32 365.4 63.6 397 198 262.5l89.6 89.7 141.1-141 51.3 51.3V128H345.6z"/>'
+const ICON_DOWN = '<path d="M480 397V262.5l-51.3 51.3-141.1-141-89.6 89.7L63.6 128 32 159.6l166 166.3 89.6-89.7 109.3 109.4-51.3 51.4H480z"/>'
+
 function fetchData() {
     return fetch(new Request(DATA_URL))
         .then(response => {
@@ -61,10 +68,10 @@ function fetchData() {
             document.getElementById('pp-value').innerText = 
                 pp
 
-            document.getElementById('global-rank-change-today-icon').className =
-                `icon ion-md-trending-${isGlobalRankChangeTodayUp ? 'up': 'down'}`
-            document.getElementById('global-rank-change-week-icon').className =
-                `icon ion-md-trending-${isGlobalRankChangeWeekUp ? 'up': 'down'}`
+            document.getElementById('global-rank-change-today-icon').innerHTML =
+                (isGlobalRankChangeTodayUp ? ICON_UP : ICON_DOWN)
+            document.getElementById('global-rank-change-week-icon').innerHTML =
+                (isGlobalRankChangeWeekUp ? ICON_UP : ICON_DOWN)
         })
     ;
 }
