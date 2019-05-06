@@ -5,8 +5,7 @@ function fetchData() {
     return fetch(new Request(DATA_URL))
         .then(response => {
             if (!response.ok) {
-                rlog('HTTP error on req from ScoreSaber, status ' + response.status)
-                throw 'HTTP error'
+                throw `HTTP error code ${response.status}`
             } else {
                 return response.text()
             }
@@ -74,16 +73,21 @@ const toNumber = (str) => (+str.replace(',', ''));
 const toLocaleNumberString = (str) => toNumber(str).toLocaleString();
 
 
-// Start-up:
-const CONTENT_DIV = document.getElementById('content')
 
-CONTENT_DIV.classList.add('hidden')
+// Start-up:
 fetchData()
     .then(() => {
         document.getElementById('load-splash').classList.add('hidden')
-        CONTENT_DIV.classList.remove('hidden')
+        document.getElementById('content').classList.remove('hidden')
     })
     .then(() => {
-        
+        // TODO: auto-refresh
+    })
+    .catch(err => {
+        document.getElementById('load-splash-text').innerText = ':/'
+
+        let msg = `Error in fetchData:\n${err.stack}`
+        rlog(msg)
+        document.getElementById('error-output').innerText = msg
     })
 ;
