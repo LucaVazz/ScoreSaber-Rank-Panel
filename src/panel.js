@@ -1,4 +1,4 @@
-const DATA_URL = new URL('http://scoresaber-proxy.lucavazzano.eu/76561198047788587')
+const DATA_URL = new URL('https://scoresaber-proxy.lucavazzano.eu/76561198047788587')
 const PARSER = new DOMParser()
 
 function fetchData() {
