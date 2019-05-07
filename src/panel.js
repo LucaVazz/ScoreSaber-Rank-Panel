@@ -46,10 +46,10 @@ function fetchData() {
 
             // Format:
             globalRank = toLocaleNumberString(globalRank)
+            globalPercentile = globalPercentile.toFixed(2)
             globalRankChangeToday = Math.abs(globalRankChangeToday).toLocaleString()
             globalRankChangeWeek = Math.abs(globalRankChangeWeek).toLocaleString()
             countryRank = toLocaleNumberString(countryRank)
-            globalPercentile = globalPercentile.toFixed(2)
             pp = toLocaleNumberString(pp)
 
             // Insert in site:
@@ -64,7 +64,9 @@ function fetchData() {
             document.getElementById('country-rank-value').innerText = 
                 countryRank
             document.getElementById('flag-img').src =
-                `http://scoresaber.com/imports/flags/${country}.png`
+                `flags/${country.toLowerCase()}.png`
+            document.getElementById('flag-img').title =
+                `Country-Code: ${country.toUpperCase()}`
             document.getElementById('pp-value').innerText = 
                 pp
 
