@@ -24,18 +24,18 @@ body {
 	font-family: "Verdana" !important;
 }
 
-body {
+body, div.light {
 	--theme-bg-color: #ffffff;
 	--theme-text-color: #19171c;
 	--theme-link-color: #6441A4;
 }
-body.dark {
+body.dark, div.dark {
 	--theme-bg-color: #0f0e11;
 	--theme-text-color: #dad8de;
-	--theme-link-color: #e2dbf0;
+	--theme-link-color: #B8A1E6;
 }
 
-body {
+body, div {
 	background-color: var(--theme-bg-color);
 }
 * {

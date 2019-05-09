@@ -3,9 +3,6 @@ const rlog = twitch.rig.log
 
 const state = {
 	isPlayingBeatSaber: false,
-	scoreSaberId: undefined,
-	language: 'en',
-	accentColor: '008139'
 }
 
 
