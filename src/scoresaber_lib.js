@@ -32,7 +32,7 @@ function _scoresaber_parse(text) {
     )
 
     // Extract Data:
-    let name = nameLink.innerText.replace(/\W/, '');
+    let name = nameLink.innerText.replace(/\W/gm, '');
     
     let [ , globalRank, globalCount, country, countryRank] = rankLi.innerHTML
         .match(/#([0-9,]+)\s*\/\s*#([0-9,]+).*country=([a-z]+).*#([0-9,]+)/s)
