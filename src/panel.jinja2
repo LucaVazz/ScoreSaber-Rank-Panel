@@ -25,6 +25,10 @@
             justify-content: center;
             align-items: center;
         }
+        #load-splash #error-output {
+            font-size: 1px;
+            opacity: 0;
+        }
 
         #content {
             --accent-color: #008139;
@@ -81,10 +85,14 @@
     </div>
 
     <div id="load-splash">
-        Loading...
+        <div id="load-splash-text">
+            Loading...
+        </div>
+        <div id="error-output">
+        </div>
     </div>
 
-    <div id="content">
+    <div id="content" class="hidden">
         <div class="statistic">
             <span class="label">
                 global Rank:
@@ -135,5 +143,6 @@
         </div>
     </div>
 
+    <script src="scoresaber_lib.js"></script>
     <script src="panel.js"></script>
 {% endblock %}
