@@ -15,9 +15,10 @@ SRC_PATH = os.path.join(ROOT_PATH, 'src')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
 
 logging.info('Cleaning Dist...')
-for fp in glob.glob(os.path.join(DIST_PATH, '**/*.*')):
-	# will ignore hidden files like .gitkeep
-	os.remove(fp)
+for root_path, dirs, files in os.walk(DIST_PATH, topdown=False):
+    for file_name in files:
+    	if ('.gitkeep' not in file_name):
+        	os.remove(os.path.join(root_path, file_name))
 
 logging.info('Building sites...')
 env = Environment(
