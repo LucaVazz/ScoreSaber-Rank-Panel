@@ -1,3 +1,6 @@
+import { getScoresaberData } from './scoresaber_lib.js'
+
+
 /*
  * icons taken from https://ionicons.com/
  *             Copyright (c) 2015-present Ionic (http://ionic.io/)
@@ -9,7 +12,7 @@ const ICON_DOWN = '<path d="M480 397V262.5l-51.3 51.3-141.1-141-89.6 89.7L63.6 1
 function fetchData() {
     rlog('Fetching ScoreSaber-Data...')
 
-    return scoresaber_getData('76561198047788587')
+    return getScoresaberData('76561198047788587')
         .then(data => {
             let {
                 globalRank, globalPercentile, globalRankChangeToday, globalRankChangeWeek,

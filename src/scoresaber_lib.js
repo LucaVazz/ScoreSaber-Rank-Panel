@@ -1,13 +1,13 @@
-const SCORESABER_DATA_URL = new URL('https://scoresaber-proxy.lucavazzano.eu')
-const SCORESABER_PARSER = new DOMParser()
+const DATA_URL = new URL('https://scoresaber-proxy.lucavazzano.eu')
+const PARSER = new DOMParser()
 
 
-const _toNumber = (str) => (+str.replace(',', ''));
-const _toLocaleNumberString = (str) => _toNumber(str).toLocaleString();
+const toNumber = (str) => (+str.replace(',', ''));
+const toLocaleNumberString = (str) => toNumber(str).toLocaleString();
 
 
-function _scoresaber_fetch(id) {
-    let targetUrl = new URL(id, SCORESABER_DATA_URL)
+function fetchData(id) {
+    let targetUrl = new URL(id, DATA_URL)
     return fetch(new Request(targetUrl))
         .then(response => {
             if (!response.ok) {
@@ -19,9 +19,9 @@ function _scoresaber_fetch(id) {
     ;
 }
 
-function _scoresaber_parse(text) {
+function parse(text) {
     // Find Elements:
-    let doc = SCORESABER_PARSER.parseFromString(text, 'text/html')
+    let doc = PARSER.parseFromString(text, 'text/html')
     let dataSectionSelector = '.content .columns .column:nth-child(2)'
 
     let nameLink = doc.querySelector(
@@ -38,7 +38,7 @@ function _scoresaber_parse(text) {
         .match(/#([0-9,]+)\s*\/\s*#([0-9,]+).*country=([a-z]+).*#([0-9,]+)/s)
     ;
 
-    let globalPercentile = _toNumber(globalRank) / _toNumber(globalCount) * 100
+    let globalPercentile = toNumber(globalRank) / toNumber(globalCount) * 100
 
     let pp = ppLi.innerText.match(/[0-9,.]+/)[0]
     let playCount = playCountLi.innerText.match(/[0-9]+/)[0]
@@ -55,12 +55,12 @@ function _scoresaber_parse(text) {
     let isGlobalRankChangeWeekUp = (globalRankChangeWeek >= 0)
 
     // Format:
-    globalRank = _toLocaleNumberString(globalRank)
+    globalRank = toLocaleNumberString(globalRank)
     globalPercentile = globalPercentile.toFixed(2)
     globalRankChangeToday = Math.abs(globalRankChangeToday).toLocaleString()
     globalRankChangeWeek = Math.abs(globalRankChangeWeek).toLocaleString()
-    countryRank = _toLocaleNumberString(countryRank)
-    pp = _toLocaleNumberString(pp)
+    countryRank = toLocaleNumberString(countryRank)
+    pp = toLocaleNumberString(pp)
 
     return {
         'name': name,
@@ -77,8 +77,8 @@ function _scoresaber_parse(text) {
 }
 
 
-function scoresaber_getData(id) {
-    return _scoresaber_fetch(id)
-        .then(text => _scoresaber_parse(text))
+export function getScoresaberData(id) {
+    return fetchData(id)
+        .then(text => parse(text))
     ;
 }
