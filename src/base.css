@@ -21,7 +21,7 @@ body {
 
 /** GENERAL STYLING, ADAPTED TO THEME */
 * {
-	font-family: "Verdana" !important;
+	font-family: "Verdana", sans-serif !important;
 }
 
 body, div.light {

@@ -1,6 +1,9 @@
 import { getScoresaberData } from './scoresaber_lib.js'
 
 
+const CONFIG_BROADCASTER_SEGMENT_VERSION = 'v1_scoreSaberId+color+lang'
+
+
 // Element References:
 let idInput = document.getElementById('score-saber-id-input')
 let colorInput = document.getElementById('accent-color-input')
@@ -80,7 +83,7 @@ document.getElementById('submit-button').addEventListener('click', evt => {
 	document.getElementById('saving-splash').classList.remove('hidden')
 
 	Twitch.ext.configuration.set(
-		'broadcaster', 'v0',
+		'broadcaster', CONFIG_BROADCASTER_SEGMENT_VERSION,
 		[getId(), getColor(), getLang()].join('|')
 	)
 })

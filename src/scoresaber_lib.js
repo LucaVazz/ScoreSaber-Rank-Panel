@@ -6,7 +6,12 @@ const toNumber = (str) => (+str.replace(',', ''));
 const toLocaleNumberString = (str) => toNumber(str).toLocaleString();
 
 
-function fetchData(id) {
+/**
+ * Retrieve the user site from ScoreSaber.com
+ * @param  {string} id the user's id as shown in the web-site URL (steam id)
+ * @return {str} site data
+ */
+function fetchSite(id) {
     let targetUrl = new URL(id, DATA_URL)
     return fetch(new Request(targetUrl))
         .then(response => {
@@ -19,6 +24,26 @@ function fetchData(id) {
     ;
 }
 
+/**
+ @typedef ScoresaberData
+ @type {Object}
+ @property {str} name name of the user
+ @property {str} globalRank current global rank of the user
+ @property {str} globalPercentile percentile of the user's current global rank (i.e. top 1%)
+ @property {str} globalRankChangeToday change of the user's global rank, compared to 1 day ago
+ @property {str} isGlobalRankChangeTodayUp true if globalRankChangeToday is < 0
+ @property {str} globalRankChangeWeek change of the user's global rank, compared to 7 days ago
+ @property {str} isGlobalRankChangeWeekUp true if globalRankChangeWeek is < 0
+ @property {str} country two-letter country code of the user's home country
+ @property {str} countryRank current national rank of the user
+ @property {str} pp performance point count of the user
+ */
+
+/**
+ * Extract user data from the fetched site data
+ * @param  {str} text site data, obtained via fetchSite
+ * @return {ScoresaberData} user data
+ */
 function parse(text) {
     // Find Elements:
     let doc = PARSER.parseFromString(text, 'text/html')
@@ -76,9 +101,13 @@ function parse(text) {
     }
 }
 
-
+/**
+ * Fetch and extract the data about a specified user from ScoreSaber.com
+ * @param  {string} id the user's id as shown in the web-site URL (steam id)
+ * @return {ScoresaberData} user data
+ */
 export function getScoresaberData(id) {
-    return fetchData(id)
+    return fetchSite(id)
         .then(text => parse(text))
     ;
 }

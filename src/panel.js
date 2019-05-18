@@ -59,9 +59,10 @@ Twitch.ext.configuration.onChanged(() => {
     let broadcasterConfigStr = Twitch.ext.configuration.broadcaster
 
     if (broadcasterConfigStr && !isConfigured) {
+        // apply config:
         let [id, color, lang] = broadcasterConfigStr.content.split('|')
         if (!id || !color || !lang) {
-            return
+            return // abort if wrong config string
         }
 
         scoresaberId = id
@@ -73,12 +74,14 @@ Twitch.ext.configuration.onChanged(() => {
             })
         }
 
+        // get and display data:
         fetchData()
             .then(() => {
                 document.getElementById('load-splash').classList.add('hidden')
                 document.getElementById('content').classList.remove('hidden')
             })
             .then(() => {
+                // setup continous refreshing:
                 window.setInterval(() => {
                     if (state.isPlayingBeatSaber) {
                         fetchData().then(() => {})
