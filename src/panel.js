@@ -67,6 +67,12 @@ Twitch.ext.configuration.onChanged(() => {
         scoresaberId = id
         content.style.setProperty('--accent-color', `#${color}`)
 
+        if (lang === 'de') {
+            document.querySelectorAll('span[data-translation-de]').forEach(el => {
+                el.innerText = el.dataset.translationDe
+            })
+        }
+
         fetchData()
             .then(() => {
                 document.getElementById('load-splash').classList.add('hidden')
