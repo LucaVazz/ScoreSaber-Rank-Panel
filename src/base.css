@@ -47,3 +47,8 @@ a {
 .icon {
 	fill: var(--theme-text-color);
 }
+
+
+.hidden {
+    display: none !important;
+}

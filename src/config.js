@@ -4,6 +4,8 @@ import { getScoresaberData } from './scoresaber_lib.js'
 // Element References:
 let idInput = document.getElementById('score-saber-id-input')
 let colorInput = document.getElementById('accent-color-input')
+let langEnRadio = document.getElementById('language-radio-en')
+let langDeRadio = document.getElementById('language-radio-de')
 
 
 // Helper Functions:
@@ -19,13 +21,11 @@ function getColor() {
 	return match.length === 1 ? match[0] : undefined
 }
 
-/*
-document.querySelector('input[name="lang"]:checked').value;
- */
+function getLang() {
+	return langDeRadio.checked ? 'de' : 'en'
+}
 
-
-// Event Listeners:
-idInput.addEventListener('input', function (evt) {
+function setIdPreview() {
 	let id = getId()
 	if (!id) {
 		return
@@ -40,13 +40,48 @@ idInput.addEventListener('input', function (evt) {
 			rlog(err.stack)
 			namePreview.innerText = ''
 		})
-})
+}
 
-colorInput.addEventListener('input', function (evt) {
+function setColorPreview() {
 	let color = getColor()
 	if (!color) {
 		color = '00000000'
 	}
 
     document.getElementById('color-preview').style.setProperty('--preview-color', `#${color}`)
+}
+
+
+// Event Listeners:
+Twitch.ext.configuration.onChanged(() => {
+	let broadcasterConfigStr = Twitch.ext.configuration.broadcaster
+
+	if (broadcasterConfigStr) {
+		rlog(broadcasterConfigStr)
+		let [id, color, lang] = broadcasterConfigStr.content.split('|')
+		if (!id || !color || !lang) {
+			return
+		}
+		idInput.value = `https://scoresaber.com/u/${id}`
+		colorInput.value = color
+		;[langDeRadio, langEnRadio].map(radio => radio.checked = false)
+		;(lang === 'de' ? langDeRadio : langEnRadio).checked = true
+
+		setIdPreview()
+		setColorPreview()
+	}
+})
+
+idInput.addEventListener('input', evt => setIdPreview())
+
+colorInput.addEventListener('input', evt => setColorPreview())
+
+document.getElementById('submit-button').addEventListener('click', evt => {
+	document.getElementById('content').classList.add('hidden')
+	document.getElementById('saving-splash').classList.remove('hidden')
+
+	Twitch.ext.configuration.set(
+		'broadcaster', 'v0',
+		[getId(), getColor(), getLang()].join('|')
+	)
 })

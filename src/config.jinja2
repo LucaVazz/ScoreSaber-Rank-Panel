@@ -121,6 +121,26 @@
 		}
 
 
+		/* style of button */
+		button {
+			background: none;
+			border: 2px solid;
+			line-height: 1;
+			margin: 0.5em;
+			padding: 1em 2em;
+			color: var(--theme-link-color);
+			transition: 0.25s;
+		}
+		button:hover, button:focus {
+			border-color: var(--theme-link-color);
+			color: #fff;
+		}
+		button:hover,
+		button:focus {
+			box-shadow: inset 0 0 0 2em var(--theme-link-color);
+		}
+
+
 		/* custom style */
 		#content {
 			padding: 17px;
@@ -168,6 +188,20 @@
 			border: 2px #7f7f7f solid;
 
 			color: var(--preview-color);
+		}
+
+		#submit-button {
+			float: right;
+		}
+
+		#saving-splash {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+            align-items: center;
+		}
+		#saving-splash > span {
+			margin-top: 35px;
 		}
 	</style>
 
@@ -224,6 +258,12 @@
 			</li>
 		</ul>
 
+		<button id="submit-button">Save</button>
+
+	</div>
+
+	<div id="saving-splash" class="hidden">
+		<span>Saved!</span>
 	</div>
 
 	<script type="module" src="scoresaber_lib.js"></script>

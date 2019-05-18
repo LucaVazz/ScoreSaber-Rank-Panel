@@ -1,12 +1,11 @@
-const twitch = window.Twitch.ext
-const rlog = twitch.rig.log
+const rlog = Twitch.ext.rig.log
 
 const state = {
 	isPlayingBeatSaber: false,
 }
 
 
-twitch.onContext((context, changedKeys) => {
+Twitch.ext.onContext((context, changedKeys) => {
 	if (changedKeys.includes('theme')) {
 		if (context.theme === 'dark') {
 			document.getElementById('root').classList.add('dark')
