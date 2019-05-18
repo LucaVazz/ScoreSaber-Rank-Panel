@@ -57,7 +57,6 @@ Twitch.ext.configuration.onChanged(() => {
 	let broadcasterConfigStr = Twitch.ext.configuration.broadcaster
 
 	if (broadcasterConfigStr) {
-		rlog(broadcasterConfigStr)
 		let [id, color, lang] = broadcasterConfigStr.content.split('|')
 		if (!id || !color || !lang) {
 			return
