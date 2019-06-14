@@ -29,7 +29,7 @@ function fetchSite(id) {
  @type {Object}
  @property {str} name name of the user
  @property {str} globalRank current global rank of the user
- @property {str} globalPercentile percentile of the user's current global rank (i.e. top 1%)
+ @property {number} globalRankInt current global rank of the user, as a numerical integer
  @property {str} globalRankChangeToday change of the user's global rank, compared to 1 day ago
  @property {str} isGlobalRankChangeTodayUp true if globalRankChangeToday is < 0
  @property {str} globalRankChangeWeek change of the user's global rank, compared to 7 days ago
@@ -52,18 +52,17 @@ function parse(text) {
     let nameLink = doc.querySelector(
         `${dataSectionSelector} > h5 > a`
     )
-    let [rankLi, ppLi, playCountLi, ] = doc.querySelectorAll(
+    let [rankLi, ppLi, playCountLi, , ] = doc.querySelectorAll(
         `${dataSectionSelector} > ul > li`
     )
 
     // Extract Data:
     let name = nameLink.innerText.replace(/\W/gm, '');
     
-    let [ , globalRank, globalCount, country, countryRank] = rankLi.innerHTML
-        .match(/#([0-9,]+)\s*\/\s*#([0-9,]+).*country=([a-z]+).*#([0-9,]+)/s)
+    let [ , globalRank, country, countryRank] = rankLi.innerHTML
+        .match(/#([0-9,]+).*country=([a-z]+).*#([0-9,]+)/s)
     ;
-
-    let globalPercentile = toNumber(globalRank) / toNumber(globalCount) * 100
+    let globalRankInt = toNumber(globalRank)
 
     let pp = ppLi.innerText.match(/[0-9,.]+/)[0]
     let playCount = playCountLi.innerText.match(/[0-9]+/)[0]
@@ -81,7 +80,6 @@ function parse(text) {
 
     // Format:
     globalRank = toLocaleNumberString(globalRank)
-    globalPercentile = globalPercentile.toFixed(2)
     globalRankChangeToday = Math.abs(globalRankChangeToday).toLocaleString()
     globalRankChangeWeek = Math.abs(globalRankChangeWeek).toLocaleString()
     countryRank = toLocaleNumberString(countryRank)
@@ -90,7 +88,7 @@ function parse(text) {
     return {
         'name': name,
         'globalRank': globalRank,
-        'globalPercentile': globalPercentile,
+        'globalRankInt': globalRankInt,
         'globalRankChangeToday': globalRankChangeToday,
         'isGlobalRankChangeTodayUp': isGlobalRankChangeTodayUp,
         'globalRankChangeWeek': globalRankChangeWeek,

@@ -3,16 +3,21 @@ const rlog = Twitch.ext.rig.log
 
 const state = {
 	isPlayingBeatSaber: false,
+	globalScoreSaberCount: 186300 // fallback value, as of 2019-06-14
 }
 
 
-// Init Sentry for error reporting based on Twitch global Config
+// Catch Twitch global Config Service changes
 Twitch.ext.configuration.onChanged(() => {
     let globalConfigStr = Twitch.ext.configuration.global
     if (globalConfigStr) {
-	    let [sentryDSN, ] = globalConfigStr.content.split('|')
-	    if (!sentryDSN) { return }
+	    let [sentryDSN, globalCount] = globalConfigStr.content.split('|')
+	    if (!sentryDSN || !globalCount) { return }
 
+    	// set global count in state:
+    	state.globalScoreSaberCount = (+globalCount)
+
+    	// config error logging if not in local test:
     	if (window.location.hostname != 'localhost') {
 			Sentry.init({ dsn: sentryDSN })
 		}

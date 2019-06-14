@@ -33,12 +33,18 @@ function fetchData() {
     return getScoresaberData(scoresaberId)
         .then(data => {
             let {
-                globalRank, globalPercentile, globalRankChangeToday, globalRankChangeWeek,
+                globalRank, globalRankInt, globalRankChangeToday, globalRankChangeWeek,
                 isGlobalRankChangeTodayUp, isGlobalRankChangeWeekUp,
                 country, countryRank, pp
             } = data
 
-            // Insert in site:
+            // calculate and format global percnetile
+            let globalPercentile = globalRankInt / state.globalScoreSaberCount * 100
+            rlog(globalRankInt)
+            rlog(state.globalScoreSaberCount)
+            globalPercentile = globalPercentile.toFixed(2)
+
+            // insert in site:
             globalRankValueEl.innerText = globalRank
             globalRankPercentileEl.innerText = globalPercentile
             globalRankChangeTodayEl.innerText = globalRankChangeToday
