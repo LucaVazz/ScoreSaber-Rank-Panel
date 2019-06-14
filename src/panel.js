@@ -94,6 +94,8 @@ Twitch.ext.configuration.onChanged(() => {
                 let msg = `Error in fetchData:\n${err.stack}`
                 rlog(msg)
                 document.getElementById('error-output').innerText = msg
+
+                Sentry.captureException(err)
             })
         ;
     }
