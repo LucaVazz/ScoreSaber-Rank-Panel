@@ -19,9 +19,23 @@ Twitch.ext.configuration.onChanged(() => {
 
     	// config error logging if not in local test:
     	if (window.location.hostname != 'localhost') {
-			Sentry.init({ dsn: sentryDSN })
+			Sentry.init({ 
+				release: releaseVersion,
+				dsn: sentryDSN
+			})
 		}
 	}
+})
+
+
+// Catch user info:
+Twitch.ext.onAuthorized((userDetails) => {
+	Sentry.configureScope((scope) => {
+		scope.setUser({
+			"id": userDetails.userId
+		})
+		scope.setTag("channelId", userDetails.channelId)
+	})
 })
 
 
