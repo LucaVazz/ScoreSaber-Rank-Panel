@@ -38,6 +38,9 @@ function fetchData() {
 
             // calculate and format global percnetile
             let globalPercentile = globalRankInt / state.globalScoreSaberCount * 100
+            if (globalPercentile < 0.01) {
+                globalPercentile = 0.01 // to avoid showing `0.00%`
+            }
             globalPercentile = globalPercentile.toFixed(2)
 
             // insert in site:

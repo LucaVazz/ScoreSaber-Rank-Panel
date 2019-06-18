@@ -52,8 +52,18 @@ function parse(text) {
     let nameLink = doc.querySelector(
         `${dataSectionSelector} > h5 > a`
     )
-    let [rankLi, ppLi, playCountLi, , ] = doc.querySelectorAll(
+    let rankLi, ppLi = null
+    doc.querySelectorAll(
         `${dataSectionSelector} > ul > li`
+    ).forEach(
+        liElem => {
+            let liText = (liElem ? liElem.innerText : '')
+            if (liText.includes('Player Ranking')) {
+                rankLi = liElem
+            } else if (liText.includes('Performance Points')) {
+                ppLi = liElem
+            }
+        }
     )
 
     // Extract Data:
@@ -65,7 +75,6 @@ function parse(text) {
     let globalRankInt = toNumber(globalRank)
 
     let pp = ppLi.innerText.match(/[0-9,.]+/)[0]
-    let playCount = playCountLi.innerText.match(/[0-9]+/)[0]
 
     let rankHistory = doc.querySelector('script:not([src])').innerText
         .match(/datasets:.*\[{.*data:.*\[([0-9,]+)/s)[1]
