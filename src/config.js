@@ -40,7 +40,6 @@ function setIdPreview() {
     		namePreview.innerText = `Welcome ${data.name}!`
 		})
 		.catch((err) => {
-			rlog(err.stack)
 			namePreview.innerText = ''
 		})
 }

@@ -28,8 +28,6 @@ const ICON_DOWN = '<path d="M480 397V262.5l-51.3 51.3-141.1-141-89.6 89.7L63.6 1
 
 // Functions:
 function fetchData() {
-    rlog('Fetching ScoreSaber-Data...')
-
     return getScoresaberData(scoresaberId)
         .then(data => {
             let {
@@ -40,8 +38,6 @@ function fetchData() {
 
             // calculate and format global percnetile
             let globalPercentile = globalRankInt / state.globalScoreSaberCount * 100
-            rlog(globalRankInt)
-            rlog(state.globalScoreSaberCount)
             globalPercentile = globalPercentile.toFixed(2)
 
             // insert in site:
@@ -98,7 +94,6 @@ Twitch.ext.configuration.onChanged(() => {
                 document.getElementById('load-splash-text').innerText = ':/'
 
                 let msg = `Error in fetchData:\n${err.stack}`
-                rlog(msg)
                 document.getElementById('error-output').innerText = msg
 
                 Sentry.captureException(err)
