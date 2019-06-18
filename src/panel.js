@@ -86,7 +86,10 @@ Twitch.ext.configuration.onChanged(() => {
                 // setup continous refreshing:
                 window.setInterval(() => {
                     if (state.isPlayingBeatSaber) {
-                        fetchData().then(() => {})
+                        fetchData()
+                            .then(() => {})
+                            .catch(err => {/* ignore for refreshes */})
+                        ;
                     }
                 }, 60 * 1000)
             })
