@@ -85,17 +85,6 @@ Twitch.ext.configuration.onChanged(() => {
                 document.getElementById('load-splash').classList.add('hidden')
                 document.getElementById('content').classList.remove('hidden')
             })
-            .then(() => {
-                // setup continous refreshing:
-                window.setInterval(() => {
-                    if (state.isPlayingBeatSaber) {
-                        fetchData()
-                            .then(() => {})
-                            .catch(err => {/* ignore for refreshes */})
-                        ;
-                    }
-                }, 60 * 1000)
-            })
             .catch(err => {
                 document.getElementById('load-splash-text').innerText = ':/'
 
