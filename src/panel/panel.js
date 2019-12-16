@@ -1,9 +1,17 @@
 import { getScoresaberData } from './scoresaber_lib.js'
+import {
+	parseConfigStr, hookOnGlobalConfigChanged, hookOnAuthorized, hookOnContextChanged
+} from './twitch-hooks_lib.js'
 
+
+// Constants:
+const ICON_UP = 'la-angle-up'
+const ICON_DOWN = 'la-angle-down'
 
 // State Vars:
 var isConfigured = false
 var scoresaberId = undefined
+var globalScoreSaberCount = -1
 
 
 // Element References:
@@ -17,10 +25,6 @@ var countryRankEl = document.getElementById('country-rank-value')
 var flagImgEl = document.getElementById('flag-img')
 var ppValueEl = document.getElementById('pp-value')
 
-// constants
-const ICON_UP = 'la-angle-up'
-const ICON_DOWN = 'la-angle-down'
-
 
 // Functions:
 function fetchData() {
@@ -33,7 +37,7 @@ function fetchData() {
             } = data
 
             // calculate and format global percnetile
-            let globalPercentile = globalRankInt / state.globalScoreSaberCount * 100
+            let globalPercentile = globalRankInt / globalScoreSaberCount * 100
             if (globalPercentile < 0.01) {
                 globalPercentile = 0.01 // to avoid showing `0.00%`
             }
@@ -56,17 +60,19 @@ function fetchData() {
 
 
 // Start-up:
-Twitch.ext.configuration.onChanged(() => {
-    let broadcasterConfigStr = Twitch.ext.configuration.broadcaster
+hookOnAuthorized()
+hookOnContextChanged()
+hookOnGlobalConfigChanged((globalConf) => {
+    globalScoreSaberCount = globalConf.globalCount
 
-    if (broadcasterConfigStr && !isConfigured) {
+    let broadcasterConfig = Twitch.ext.configuration.broadcaster
+
+    if (broadcasterConfig && !isConfigured) {
         // apply config:
-        let [id, color, lang] = broadcasterConfigStr.content.split('|')
-        if (!id || !color || !lang) {
-            return // abort if wrong config string
-        }
+        let color, lang
+        [scoresaberId, color, lang] = parseConfigStr(broadcasterConfig, [null, null, null])
+        if (!scoresaberId) { return /* abort if wrong config string */ }
 
-        scoresaberId = id
         content.style.setProperty('--accent-color', `#${color}`)
 
         if (lang === 'de') {

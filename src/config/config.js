@@ -1,6 +1,10 @@
 import { getScoresaberData } from './scoresaber_lib.js'
+import {
+	parseConfigStr, hookOnGlobalConfigChanged, hookOnAuthorized, hookOnContextChanged
+} from './twitch-hooks_lib.js'
 
 
+// Constants:
 const CONFIG_BROADCASTER_SEGMENT_VERSION = 'v1_scoreSaberId+color+lang'
 
 
@@ -47,7 +51,7 @@ function setIdPreview() {
 function setColorPreview() {
 	let color = getColor()
 	if (!color) {
-		color = '00000000'
+		color = '757575'
 	}
 
     document.getElementById('color-preview').style.setProperty('--preview-color', `#${color}`)
@@ -55,24 +59,6 @@ function setColorPreview() {
 
 
 // Event Listeners:
-Twitch.ext.configuration.onChanged(() => {
-	let broadcasterConfigStr = Twitch.ext.configuration.broadcaster
-
-	if (broadcasterConfigStr) {
-		let [id, color, lang] = broadcasterConfigStr.content.split('|')
-		if (!id || !color || !lang) {
-			return
-		}
-		idInput.value = `https://scoresaber.com/u/${id}`
-		colorInput.value = color
-		;[langDeRadio, langEnRadio].map(radio => radio.checked = false)
-		;(lang === 'de' ? langDeRadio : langEnRadio).checked = true
-
-		setIdPreview()
-		setColorPreview()
-	}
-})
-
 idInput.addEventListener('input', evt => setIdPreview())
 
 colorInput.addEventListener('input', evt => setColorPreview())
@@ -85,4 +71,25 @@ document.getElementById('submit-button').addEventListener('click', evt => {
 		'broadcaster', CONFIG_BROADCASTER_SEGMENT_VERSION,
 		[getId(), getColor(), getLang()].join('|')
 	)
+})
+
+
+// Start-Up:
+hookOnAuthorized()
+hookOnContextChanged()
+hookOnGlobalConfigChanged((globalConf) => {
+	let broadcasterConfig = Twitch.ext.configuration.broadcaster
+
+	if (broadcasterConfig) {
+		let [id, color, lang] = parseConfigStr(broadcasterConfig, [null, null, null])
+		if (!id) { return }
+
+		idInput.value = `https://scoresaber.com/u/${id}`
+		colorInput.value = color
+		;[langDeRadio, langEnRadio].map(radio => radio.checked = false)
+		;(lang === 'de' ? langDeRadio : langEnRadio).checked = true
+
+		setIdPreview()
+		setColorPreview()
+	}
 })
