@@ -21,6 +21,19 @@ function fetchSite(id) {
                 return response.text()
             }
         })
+        .then(data => {
+                let reducedData, i = 0
+                if (data.includes('<div class="content">')) { reducedData = data.split('<div class="content">').pop()
+                } else if (data.includes('<body>')) {         reducedData = data.split('<body>').pop()
+                } else {                                      reducedData = data + ' ' }
+                while (reducedData.length > 0) {
+                    Sentry.setExtra('scoresaber_lib#fetchSite -> result ' + i, reducedData.slice(0, 4000))
+                    reducedData = reducedData.slice(4000)
+                    i++
+                }
+
+                return data
+        })
     ;
 }
 
@@ -68,7 +81,7 @@ function parse(text) {
 
     // Extract Data:
     let name = nameLink.innerText.replace(/\W/gm, '')
-    
+
     /* <a href="/global">#220</a> - ( <a href="/global?country=us"><img src="/imports/images/flags/us.png"> #72</a> */
     let globalRank   = rankLi.innerHTML.match(/global">#([0-9,]+)<\/a>/)[1]
     let country      = rankLi.innerHTML.match(/global\?country=([a-z]+)/)[1]

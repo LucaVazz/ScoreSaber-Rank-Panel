@@ -21,7 +21,7 @@ export function hookOnGlobalConfigChanged(callback = null) {
 			globalCount = (+globalCount)
 
 			// configure error logging if not in local test:
-			if (window.location.hostname == 'localhost' && sentryDSN) {
+			if (window.location.hostname != 'localhost' && sentryDSN) {
 				Sentry.init({ 
 					release: releaseVersion,
 					dsn: sentryDSN
