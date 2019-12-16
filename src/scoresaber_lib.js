@@ -67,17 +67,18 @@ function parse(text) {
     )
 
     // Extract Data:
-    let name = nameLink.innerText.replace(/\W/gm, '');
+    let name = nameLink.innerText.replace(/\W/gm, '')
     
-    let [ , globalRank, country, countryRank] = rankLi.innerHTML
-        .match(/#([0-9,]+).*country=([a-z]+).*#([0-9,]+)/s)
-    ;
+    /* <a href="/global">#220</a> - ( <a href="/global?country=us"><img src="/imports/images/flags/us.png"> #72</a> */
+    let globalRank   = rankLi.innerHTML.match(/global">#([0-9,]+)<\/a>/)[1]
+    let country      = rankLi.innerHTML.match(/global\?country=([a-z]+)/)[1]
+    let countryRank  = rankLi.innerHTML.match(/"> #([0-9,]+)<\/a>/)[1]
     let globalRankInt = toNumber(globalRank)
 
     let pp = ppLi.innerText.match(/[0-9,.]+/)[0]
 
     let rankHistory = doc.querySelector('script:not([src])').innerText
-        .match(/datasets:.*\[{.*data:.*\[([0-9,]+)/s)[1]
+        .match(/datasets:\s*\[{\s*data:\s*\[([0-9,]+)\]/)[1]
         .split(',')
         .map(v => (+v))
         .reverse()
