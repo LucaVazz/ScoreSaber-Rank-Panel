@@ -73,7 +73,7 @@
     font-style: normal;
     font-weight: 900;
     font-display: auto;
-    src: url("/fonts/la.woff2") format("woff2"), url("/fonts/la.ttf") format("truetype");
+    src: url("./fonts/la.woff2") format("woff2"), url("./fonts/la.ttf") format("truetype");
 }
 
 .la {
