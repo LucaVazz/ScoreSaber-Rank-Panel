@@ -20,19 +20,23 @@ A Twitch Extension, providing a Panel to show your current ranking on ScoreSaber
 
 ### Function Outline
 - uses the [Twitch Configuration Service](https://dev.twitch.tv/docs/extensions/building/#configuration-service)
-    to save customization value
-- uses a minimal reverse proxy to access the ScroeSaber.com user page and extracts relevant data from it
-- source files are structured using [Jinja2 Templating](http://jinja.pocoo.org/docs/2.10/templates/)
+    to save customization values
+- extracts data from [ScoreSaber](https://scoresaber.com)
+- uses a caching proxy in-front of ScoreSaber to reduce load to their site
+- source files are structured using [Nunjucks Templating](https://mozilla.github.io/nunjucks/)
+- build-orchestration is handled by [Eleventy](https://www.11ty.dev/)
+- background error reporting via [Sentry](https://docs.sentry.io/platforms/javascript/)
+- additonal resources are taken from [Line-Awesome](https://icons8.com/line-awesome) and
+    [svg-country-flags](https://github.com/hjnilsson/country-flags)
 
 
 ### Local Development Setup
-1. make sure you have Python 3.5 or later installed
-1. download and install the [Twitch Developer Rig]()
+1. download and install the [Twitch Developer Rig](https://dev.twitch.tv/docs/extensions/rig/) and
+    [yarn](https://yarnpkg.com/lang/en/docs/install/#windows-stable)
 1. clone this repository
-1. install `jinja2` via pip
+1. install all dependencies via `yarn`
 1. set the project up in the Rig and use it to serve the files locally
     - front-end files: `<clone-dir>\dist`
     - front-end command: *leave blank*
-1. whenever you change relevant sources, built the project again:
-    `python build.py`
-
+1. while developing have `yarn run watch` running to get live-updates to the app files
+1. to get ready to uplaod files to Twitch, run `yarn run package`

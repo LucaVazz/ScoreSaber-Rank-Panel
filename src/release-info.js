@@ -1,1 +1,1 @@
-const releaseVersion = '1.0.2'
+const releaseVersion = '1.2.0'

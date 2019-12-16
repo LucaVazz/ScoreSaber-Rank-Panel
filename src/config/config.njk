@@ -1,0 +1,74 @@
+---
+layout: base
+permalink: config.html
+---
+
+
+<style type="text/css">
+	{% include './config.css' %}
+</style>
+
+
+<div id="content">
+	<h1>Let's get ready!</h1>
+
+	<input type="text" id="score-saber-id-input" required="required"/>
+	<div class="bar"></div>
+	<label  class="note"for="score-saber-id-input">ScroeSaber Profile - Link / - ID</label>
+
+	<div class="note">
+		Go to <a target="_blank" href="https://scoresaber.com/global">ScoreSaber.com/global</a>,
+		search for your Steam User-Name in the top right corner and open your result.
+	</div>
+	<div class="note">
+		Then copy the address of the site which you just opened and past it in this input.
+	</div>
+	<div id="name-preview">
+	</div>
+
+	<hr/>
+
+	<input type="text" id="accent-color-input" required="required" value="008139" />
+	<div class="bar"></div>
+	<label  class="note"for="accent-color-input">CSS-Color for styled text</label>
+
+	<div id="color-preview" style="--preview-color: #008139;">
+		<div class="light">
+			Test-Text
+		</div>
+		<div class="dark">
+			Test-Text
+		</div>
+	</div>
+
+	<hr/>
+
+	<span class="note">
+		Language:
+	</span>
+
+	<ul class="radio-list">
+		<li>
+			<label for="language-radio-en">
+				<input id="language-radio-en" type="radio" name="language" value="en" checked>
+				English
+			</label>
+		</li>
+		<li>
+			<label for="language-radio-de">
+				<input id="language-radio-de" type="radio" name="language" value="de">
+				German
+			</label>
+		</li>
+	</ul>
+
+	<button id="submit-button">Save</button>
+
+</div>
+
+<div id="saving-splash" class="hidden">
+	<span>Saved!</span>
+</div>
+
+<script type="module" src="scoresaber_lib.js"></script>
+<script type="module" src="config.js"></script>

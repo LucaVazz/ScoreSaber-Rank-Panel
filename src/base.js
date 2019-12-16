@@ -48,8 +48,4 @@ Twitch.ext.onContext((context, changedKeys) => {
 			document.getElementById('root').classList.remove('dark')
 		}
 	}
-
-	if (changedKeys.includes('game')) {
-		state.isPlayingBeatSaber = (context.game === 'Beat Saber');
-	}
 })
