@@ -65,3 +65,33 @@
 .statistic .value .note .icon {
     margin-right: -2px;
 }
+
+
+/* minimal Line Awesome */
+@font-face{
+    font-family: Line Awesome Free;
+    font-style: normal;
+    font-weight: 900;
+    font-display: auto;
+    src: url("/fonts/la.woff2") format("woff2"), url("/fonts/la.ttf") format("truetype");
+}
+
+.la {
+    font-family: Line Awesome Free !important;
+    font-weight: 900;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+}
+
+.la-angle-down:before {
+  content: "\f107";
+}
+
+.la-angle-up:before {
+  content: "\f106";
+}
