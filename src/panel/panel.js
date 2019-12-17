@@ -15,6 +15,7 @@ var globalScoreSaberCount = -1
 
 
 // Element References:
+var contentEl = document.getElementById('content')
 var globalRankValueEl = document.getElementById('global-rank-value')
 var globalRankPercentileEl = document.getElementById('global-rank-percentile')
 var globalRankChangeTodayEl = document.getElementById('global-rank-change-today')
@@ -73,7 +74,7 @@ hookOnGlobalConfigChanged((globalConf) => {
         [scoresaberId, color, lang] = parseConfigStr(broadcasterConfig, [null, null, null])
         if (!scoresaberId) { return /* abort if wrong config string */ }
 
-        content.style.setProperty('--accent-color', `#${color}`)
+        contentEl.style.setProperty('--accent-color', `#${color}`)
 
         if (lang === 'de') {
             document.querySelectorAll('span[data-translation-de]').forEach(el => {
@@ -85,7 +86,7 @@ hookOnGlobalConfigChanged((globalConf) => {
         fetchData()
             .then(() => {
                 document.getElementById('load-splash').classList.add('hidden')
-                document.getElementById('content').classList.remove('hidden')
+                contentEl.classList.remove('hidden')
             })
             .catch(err => {
                 document.getElementById('load-splash-text').innerText = ':/'
