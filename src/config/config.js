@@ -1,3 +1,4 @@
+import { getScoresaberData } from './scoresaber_lib.js'
 import {
 	parseConfigStr, hookOnGlobalConfigChanged, hookOnAuthorized, hookOnContextChanged
 } from './twitch-hooks_lib.js'
@@ -33,13 +34,18 @@ function getLang() {
 
 function setIdPreview() {
 	let id = getId()
+	if (!id) {
+		return
+	}
 
 	let namePreview = document.getElementById('name-preview')
-	if (id) {
-		namePreview.innerText = 'That address looks valid.'
-	} else {
-		namePreview.innerText = ''
-	}
+	getScoresaberData(id)
+        .then(data => {
+    		namePreview.innerText = `Welcome ${data.name}!`
+		})
+		.catch((err) => {
+			namePreview.innerText = ''
+		})
 }
 
 function setColorPreview() {

@@ -1,38 +1,19 @@
-const DATA_URL = new URL('https://scoresaber-proxy.lucavazzano.eu')
-const PARSER = new DOMParser()
-
-
-const toNumber = (str) => (+str.replace(',', ''));
-const toLocaleNumberString = (str) => toNumber(str).toLocaleString();
-
-
 /**
  * Retrieve the user site from ScoreSaber.com
  * @param  {string} id the user's id as shown in the web-site URL (steam id)
  * @return {str} site data
  */
 function fetchSite(id) {
-    let targetUrl = new URL(id, DATA_URL)
+    let targetUrl = new URL(`https://new.scoresaber.com/api/player/${id}/basic`)
     return fetch(new Request(targetUrl))
         .then(response => {
             if (!response.ok) {
                 throw `HTTP error code ${response.status}`
             } else {
-                return response.text()
-            }
-        })
-        .then(data => {
-                let reducedData, i = 0
-                if (data.includes('<div class="content">')) { reducedData = data.split('<div class="content">').pop()
-                } else if (data.includes('<body>')) {         reducedData = data.split('<body>').pop()
-                } else {                                      reducedData = data + ' ' }
-                while (reducedData.length > 0) {
-                    Sentry.setExtra('scoresaber_lib#fetchSite -> result ' + i, reducedData.slice(0, 4000))
-                    reducedData = reducedData.slice(4000)
-                    i++
-                }
-
+                let data = response.json()
+                Sentry.setExtra('scoresaber_lib#fetchSite', JSON.stringify(data))
                 return data
+            }
         })
     ;
 }
@@ -50,75 +31,52 @@ function fetchSite(id) {
  @property {str} country two-letter country code of the user's home country
  @property {str} countryRank current national rank of the user
  @property {str} pp performance point count of the user
+ @property {boolean} isBanned if the player is banned
+ @property {boolean} isInactive if the player is inactive
  */
 
 /**
  * Extract user data from the fetched site data
- * @param  {str} text site data, obtained via fetchSite
+ * @param  {object} text site data, obtained via fetchSite
  * @return {ScoresaberData} user data
  */
-function parse(text) {
-    // Find Elements:
-    let doc = PARSER.parseFromString(text, 'text/html')
-    let dataSectionSelector = '.content .columns .column:nth-child(2)'
+function parse(data) {
+    data = data['playerInfo']
 
-    let nameLink = doc.querySelector(
-        `${dataSectionSelector} > h5 > a`
-    )
-    let rankLi, ppLi = null
-    doc.querySelectorAll(
-        `${dataSectionSelector} > ul > li`
-    ).forEach(
-        liElem => {
-            let liText = (liElem ? liElem.innerText : '')
-            if (liText.includes('Player Ranking')) {
-                rankLi = liElem
-            } else if (liText.includes('Performance Points')) {
-                ppLi = liElem
-            }
-        }
-    )
+    // parse out data to be formatted:
+    let currentRank = data['rank']
 
-    // Extract Data:
-    let name = nameLink.innerText.replace(/\W/gm, '')
+    let historyRank = data['history'].split(',').reverse()
+    let rankYesterday = historyRank[0]
+    let rankChangeYesterday = rankYesterday - currentRank
+    let isRankChangeYesterdayUp = (rankChangeYesterday >= 0)
+    let rankLastWeek = historyRank[6]
+    let rankChangeLastWeek = rankLastWeek - currentRank
+    let isRankChangeLastWeekUp = (rankChangeLastWeek >= 0)
 
-    /* <a href="/global">#220</a> - ( <a href="/global?country=us"><img src="/imports/images/flags/us.png"> #72</a> */
-    let globalRank   = rankLi.innerHTML.match(/global">#([0-9,]+)<\/a>/)[1]
-    let country      = rankLi.innerHTML.match(/global\?country=([a-z]+)/)[1]
-    let countryRank  = rankLi.innerHTML.match(/"> #([0-9,]+)<\/a>/)[1]
-    let globalRankInt = toNumber(globalRank)
-
-    let pp = ppLi.innerText.match(/[0-9,.]+/)[0]
-
-    let rankHistory = doc.querySelector('script:not([src])').innerText
-        .match(/datasets:\s*\[{\s*data:\s*\[([0-9,]+)\]/)[1]
-        .split(',')
-        .map(v => (+v))
-        .reverse()
-    ;
-    let globalRankChangeToday = rankHistory[1] - rankHistory[0]
-    let isGlobalRankChangeTodayUp = (globalRankChangeToday >= 0)
-    let globalRankChangeWeek = rankHistory[8] - rankHistory[0]
-    let isGlobalRankChangeWeekUp = (globalRankChangeWeek >= 0)
+    let countryRank = data['countryRank']
+    let pp = data['pp']
 
     // Format:
-    globalRank = toLocaleNumberString(globalRank)
-    globalRankChangeToday = Math.abs(globalRankChangeToday).toLocaleString()
-    globalRankChangeWeek = Math.abs(globalRankChangeWeek).toLocaleString()
-    countryRank = toLocaleNumberString(countryRank)
-    pp = toLocaleNumberString(pp)
-
+    let currentRankStr = currentRank.toLocaleString()
+    rankChangeYesterday = Math.abs(rankChangeYesterday).toLocaleString()
+    rankChangeLastWeek = Math.abs(rankChangeLastWeek).toLocaleString()
+    countryRank = countryRank.toLocaleString()
+    pp = pp.toLocaleString()
+    
     return {
-        'name': name,
-        'globalRank': globalRank,
-        'globalRankInt': globalRankInt,
-        'globalRankChangeToday': globalRankChangeToday,
-        'isGlobalRankChangeTodayUp': isGlobalRankChangeTodayUp,
-        'globalRankChangeWeek': globalRankChangeWeek,
-        'isGlobalRankChangeWeekUp': isGlobalRankChangeWeekUp,
-        'country': country,
+        'name': data['name'],
+        'globalRank': currentRankStr,
+        'globalRankInt': currentRank,
+        'globalRankChangeToday': rankChangeYesterday,
+        'isGlobalRankChangeTodayUp': isRankChangeYesterdayUp,
+        'globalRankChangeWeek': rankChangeLastWeek,
+        'isGlobalRankChangeWeekUp': isRankChangeLastWeekUp,
+        'country': data['country'],
         'countryRank': countryRank,
-        'pp': pp
+        'pp': pp,
+        'isBanned': data['banned'],
+        'isInactive': data['inactive']
     }
 }
 

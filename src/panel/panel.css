@@ -28,32 +28,51 @@
 
 #content {
     --accent-color: #008139;
-
-    flex: 1 0 auto;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
+#flag-img {
+    height: 1.4ex;
+    width: auto;
+}
 
-/* style of button */
-button {
-    background: none;
-    border: 2px solid;
-    line-height: 1;
-    margin: 0.5em;
-    padding: 1em 2em;
+.statistic {
+    margin-top: 10px;
+}
+.statistic .label, .statistic .value {
+    display: inline-block;
+    vertical-align: top;
+}
+.statistic .label {
+    font-size: 75%;
+    padding-left: 7px;
+}
+.statistic .value *:not(:nth-child(1)) {
+    margin-top: 3px;
+}
+.statistic .value .highlight {
+    font-size: 110%;
     color: var(--accent-color);
-    transition: 0.25s;
 }
-button:hover, button:focus {
-    border-color: var(--accent-color);
-    color: #fff;
+.statistic .value .highlight span {
+    color: var(--accent-color);
 }
-button:hover,
-button:focus {
-    box-shadow: inset 0 0 0 2em var(--accent-color);
+.statistic .value .highlight#pp-value {
+    font-size: 120%;
+}
+.statistic .value .note {
+    font-size: 65%;
+}
+.statistic .value .note .icon {
+    margin-right: -2px;
+}
+
+.bottom-note {
+    padding-top: 21px;
+
+    font-size: 60%;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
 }
 
 
@@ -84,8 +103,4 @@ button:focus {
 
 .la-angle-up:before {
   content: "\f106";
-}
-
-.la-external-link:before {
-  content: "\f35d";
 }

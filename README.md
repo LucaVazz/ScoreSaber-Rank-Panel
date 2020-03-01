@@ -1,4 +1,4 @@
-# ScroeSaber Rank Panel
+# ScoreSaber Rank Panel
 
 A Twitch Extension, providing a Panel to show your current ranking on ScoreSaber.com.
 
@@ -10,11 +10,11 @@ A Twitch Extension, providing a Panel to show your current ranking on ScoreSaber
 
 ### Features
 - shows current global and national Rank
-- shows change of glabel Rank for the current day and the current week (last 7 days)
+- shows change of global Rank for the current day and the current week (last 7 days)
 - shows current Performance Points Count
 - adapts dynamically to the dark and light theme of Twitch
-- coloring fully customizable
-- display langauge of the Panel can be set to English or German
+- colouring fully customizable
+- display language of the Panel can be set to English or German
 - when the streamer is currently playing Beat Saber, it auto-refreshes every minute
 
 
@@ -39,4 +39,4 @@ A Twitch Extension, providing a Panel to show your current ranking on ScoreSaber
     - front-end files: `<clone-dir>\dist`
     - front-end command: *leave blank*
 1. while developing have `yarn run watch` running to get live-updates to the app files
-1. to get ready to uplaod files to Twitch, run `yarn run package`
+1. to get ready to upload files to Twitch, run `yarn run package`
