@@ -1,0 +1,5 @@
+# prefix what should be ignored with !
+# same format as .gitignore
+
+!panel/*
+!**.11ty.js
