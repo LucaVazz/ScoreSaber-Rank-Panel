@@ -37,7 +37,7 @@ function fetchData() {
     return getScoresaberData(scoresaberId)
         .then(data => {
             // calculate and format global percentile
-            let globalPercentile = data.globalRankInt / data.globalScoreSaberCount * 100
+            let globalPercentile = data.globalRankInt / globalScoreSaberCount * 100
             if (globalPercentile < 0.01) {
                 globalPercentile = 0.01 // to avoid showing `0.00%`
             }
