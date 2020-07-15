@@ -65,7 +65,7 @@ function parse(data) {
     pp = pp.toLocaleString()
     
     return {
-        'name': data['name'],
+        'name': data['playerName'] || data['name'],
         'globalRank': currentRankStr,
         'globalRankInt': currentRank,
         'globalRankChangeToday': rankChangeYesterday,
