@@ -1,3 +1,9 @@
+export class ScoresaberFetchError {
+    constructor(code) {
+        this.code = code;
+    }
+}
+
 /**
  * Retrieve the user site from ScoreSaber.com
  * @param  {string} id the user's id as shown in the web-site URL (steam id)
@@ -8,7 +14,10 @@ function fetchSite(id) {
     return fetch(new Request(targetUrl))
         .then(response => {
             if (!response.ok) {
-                throw `HTTP error code ${response.status}`
+                if (response.status) {
+                    throw new ScoresaberFetchError(response.status)
+                }
+                throw response.body
             } else {
                 let data = response.json()
                 Sentry.setExtra('scoresaber_lib#fetchSite', JSON.stringify(data))

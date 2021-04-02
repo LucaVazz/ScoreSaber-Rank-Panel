@@ -18,6 +18,7 @@
     flex: 1 0 auto;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -68,6 +69,7 @@
 
 .bottom-note {
     padding-top: 21px;
+    padding: 21px 8px 0;
 
     font-size: 60%;
     font-style: italic;

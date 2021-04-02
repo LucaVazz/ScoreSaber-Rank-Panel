@@ -107,8 +107,17 @@ hookOnGlobalConfigChanged((globalConf) => {
             .catch(err => {
                 document.getElementById('load-splash-text').innerText = ':/'
 
-                let msg = `Error in fetchData:\n${err.stack}`
-                document.getElementById('error-output').innerText = msg
+                if (err.code) {
+                    if (err.code === 404) {
+                        document.getElementById('note-error-not-found').style['display'] = 'block'
+                        return
+                    } else if (err.code === 429) {
+                        document.getElementById('note-error-rate-limit').style['display'] = 'block'
+                        return
+                    }
+                }
+
+                document.getElementById('note-error').style['display'] = 'block'
 
                 Sentry.captureException(err)
             })
